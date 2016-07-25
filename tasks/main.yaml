@@ -4,18 +4,48 @@
   assert:
     that: >
       ansible_os_family == "RedHat"
+  tags:
+    - ad_auth_assert
 
 - name: Install authconfig
   yum:
     name: authconfig
     state: present
+  tags:
+    - ad_auth_pkg
 
 - name: Check if authconfig did run before
   command: "/bin/egrep '^auth.*sufficient.*pam_sss.so' /etc/pam.d/system-auth"
   register: ad_auth_authconfig_run
   failed_when: False
   changed_when: False
+  tags:
+    - ad_auth_cmd
 
 - name: Configure PAM
   command: /usr/sbin/authconfig {{ ad_auth_authconfig_options | join(" ") }}
   when: ad_auth_authconfig_run.rc != 0
+  tags:
+    - ad_auth_cmd
+
+- name: Install packages required to join the domain
+  package:
+    name: "{{ item }}"
+  when: ad_auth_join_cmd | length > 0
+  with_items: "{{ ad_auth_join_pkgs }}"
+  tags:
+    - ad_auth_pkg
+    - ad_auth_cmd
+
+- name: Run join command
+  shell: "{{ ad_auth_join_cmd }}"
+  register: ad_auth_join_cmd_result
+  when: ad_auth_join_cmd | length > 0
+  no_log: yes
+  changed_when: ad_auth_join_cmd_result.rc != ad_auth_join_cmd_rc
+  failed_when: false and ad_auth_join_cmd_result.rc not in [0, ad_auth_join_cmd_rc]
+  tags:
+    - ad_auth_cmd
+
+- debug:
+    var: ad_auth_join_cmd_result

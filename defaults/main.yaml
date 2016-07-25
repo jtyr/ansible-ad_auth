@@ -1,10 +1,42 @@
 ---
 
 # Default authconfig options
-ad_auth_authconfig_options:
+ad_auth_authconfig_options__default:
   - "--enablesssd"
   - "--enablesssdauth"
   - "--enablemkhomedir"
   - "--enablelocauthorize"
   - "--update"
   - "--nostart"
+
+# Custom authconfig options
+ad_auth_authconfig_options__custom: []
+
+# Final authconfig options
+ad_auth_authconfig_options: "{{
+  ad_auth_authconfig_options__default +
+  ad_auth_authconfig_options__custom }}"
+
+# Packages required to join the domain and/or get the machine token
+# (explicit version can be specified here)
+ad_auth_join_pkgs:
+  # Contains kinit
+  - krb5-workstation
+
+# Command or script to join the domain and/or get the machine token
+ad_auth_join_cmd: ""
+# Example:
+#ad_auth_join_cmd: >
+#  env rm -f /tmp/krb5cc_*;
+#  if [[ "x{{ ad_auth__force | default('') }}" != "x" ]]; then
+#    env rm -f /etc/krb5.keytab;
+#  fi;
+#  if [ ! -f /etc/krb5.keytab ]; then
+#    net ads join -U '{{ ad_auth___user }}%{{ ad_auth___password }}' &&
+#    kinit -k '{{ (ansible_hostname | hash('sha1'))[0:14] | upper }}$@{{ ansible_domain | upper }}';
+#  else
+#    exit 100;
+#  fi
+
+# Expected return code from the command indicating no error
+ad_auth_join_cmd_rc: 100

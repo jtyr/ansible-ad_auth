@@ -11,7 +11,4 @@ galaxy_info:
         - all
   categories:
     - system
-dependencies:
-  - sssd
-  - oddjob
-  - nsswitch
+dependencies: []
