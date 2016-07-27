@@ -46,6 +46,3 @@
   failed_when: false and ad_auth_join_cmd_result.rc not in [0, ad_auth_join_cmd_rc]
   tags:
     - ad_auth_cmd
-
-- debug:
-    var: ad_auth_join_cmd_result
