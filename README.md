@@ -30,6 +30,8 @@ Example
     nsswitch_shadow: *nsswitch___options
 
     # You might also need to customize the samba config
+    samba_service_enable: no
+    samba_service_start: no
     samba_config:
       global:
         client signing: "yes"
@@ -51,8 +53,10 @@ Example
         env rm -f /etc/krb5.keytab;
       fi;
       if [ ! -f /etc/krb5.keytab ]; then
+        service {{ samba_service }} start;
         net ads join -U '{{ ad_auth___user }}'%'{{ ad_auth___password }}' &&
         kinit -k -t /etc/krb5.keytab '{{ (ansible_hostname | hash('sha1'))[0:14] | upper }}$@{{ ansible_domain | upper }}';
+        service {{ samba_service }} stop;
       else
         exit 100;
       fi
