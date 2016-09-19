@@ -22,7 +22,7 @@
   when: ad_auth_join_cmd | length > 0
   no_log: yes
   changed_when: ad_auth_join_cmd_result.rc != ad_auth_join_cmd_rc
-  failed_when: false and ad_auth_join_cmd_result.rc not in [0, ad_auth_join_cmd_rc]
+  failed_when: ad_auth_join_cmd_result.rc not in [0, ad_auth_join_cmd_rc]
   tags:
     - ad_auth_cmd
 
