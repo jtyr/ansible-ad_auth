@@ -48,8 +48,8 @@ Example
     ad_auth___user: myuser
     ad_auth___password: myp4sw0rd
     ad_auth_join_cmd: >
-      env rm -f /tmp/krb5cc_*;
       if [[ "x{{ ad_auth__force | default('') }}" != "x" ]]; then
+        env rm -f /tmp/krb5cc_*;
         env rm -f /etc/krb5.keytab;
       fi;
       if [ ! -f /etc/krb5.keytab ]; then
