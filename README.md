@@ -49,13 +49,16 @@ Example
     ad_auth___password: myp4sw0rd
     ad_auth_join_cmd: >
       if [[ "x{{ ad_auth__force | default('') }}" != "x" ]]; then
-        env rm -f /tmp/krb5cc_*;
         env rm -f /etc/krb5.keytab;
       fi;
       if [ ! -f /etc/krb5.keytab ]; then
+        set -e;
+        kdestroy;
+        net ads leave -U '{{ ad_auth___user }}'%'{{ ad_auth___password }}' || true;
+        env rm -f /tmp/krb5cc_*;
         service {{ samba_service }} start;
         net ads join -U '{{ ad_auth___user }}'%'{{ ad_auth___password }}' &&
-        kinit -k -t /etc/krb5.keytab '{{ (ansible_hostname | hash('sha1'))[0:14] | upper }}$@{{ ansible_domain | upper }}';
+        kinit -k -t /etc/krb5.keytab '{{ (ansible_hostname | hash('sha1'))[0:14] | upper }}$@{{ ansible_domain | upper }}' || false;
         service {{ samba_service }} stop;
       else
         exit 100;
