@@ -20,7 +20,7 @@
   shell: "{{ ad_auth_join_cmd }}"
   register: ad_auth_join_cmd_result
   when: ad_auth_join_cmd | length > 0
-  no_log: yes
+  no_log: "{{ ad_auth_join_no_log }}"
   changed_when: ad_auth_join_cmd_result.rc != ad_auth_join_cmd_rc
   failed_when: ad_auth_join_cmd_result.rc not in [0, ad_auth_join_cmd_rc]
   tags:

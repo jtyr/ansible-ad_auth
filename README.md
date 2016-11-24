@@ -113,22 +113,14 @@ ad_auth_join_pkgs:
   - krb5-workstation
 
 # Command or script to join the domain and/or get the machine token
+# (see an example in the README.md)
 ad_auth_join_cmd: ""
-# Example:
-#ad_auth_join_cmd: >
-#  env rm -f /tmp/krb5cc_*;
-#  if [[ "x{{ ad_auth__force | default('') }}" != "x" ]]; then
-#    env rm -f /etc/krb5.keytab;
-#  fi;
-#  if [ ! -f /etc/krb5.keytab ]; then
-#    net ads join -U '{{ ad_auth___user }}%{{ ad_auth___password }}' &&
-#    kinit -k '{{ (ansible_hostname | hash('sha1'))[0:14] | upper }}$@{{ ansible_domain | upper }}';
-#  else
-#    exit 100;
-#  fi
 
 # Expected return code from the command indicating no error
 ad_auth_join_cmd_rc: 100
+
+# Do no log the join command as it might contain passwords
+ad_auth_join_no_log: yes
 ```
 
 

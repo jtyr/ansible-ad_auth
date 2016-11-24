@@ -29,3 +29,6 @@ ad_auth_join_cmd: ""
 
 # Expected return code from the command indicating no error
 ad_auth_join_cmd_rc: 100
+
+# Do no log the join command as it might contain passwords
+ad_auth_join_no_log: yes
