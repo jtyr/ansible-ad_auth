@@ -27,9 +27,8 @@
     - ad_auth_cmd
 
 - name: Install authconfig
-  yum:
+  package:
     name: authconfig
-    state: present
   tags:
     - ad_auth_pkg
 
